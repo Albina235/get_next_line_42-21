@@ -1,24 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.h                                    :+:      :+:    :+:   */
+/*   get_next_line_utils.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: evalorie <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2021/10/23 13:48:00 by evalorie          #+#    #+#             */
-/*   Updated: 2021/10/27 15:13:05 by evalorie         ###   ########.fr       */
+/*   Created: 2021/10/27 14:34:19 by evalorie          #+#    #+#             */
+/*   Updated: 2021/10/27 14:42:09 by evalorie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef GET_NEXT_LINE_H
-# define GET_NEXT_LINE_H
+#include "get_next_line.h"
 
-#include <stdlib.h>
-#include <unistd.h>
-#include <stdio.h>
-#include <fcntl.h>
+size_t    ft_strlen(const char *str)
+{
+    size_t    i;
 
-char	*get_next_line(int fd);
-size_t	ft_strlen(const char *str);
-
-#endif
+    i = 0;
+    while (str[i] != '\0')
+        i++;
+    return (i);
+}

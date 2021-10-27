@@ -6,23 +6,13 @@
 /*   By: evalorie <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/23 13:37:45 by evalorie          #+#    #+#             */
-/*   Updated: 2021/10/26 18:48:47 by evalorie         ###   ########.fr       */
+/*   Updated: 2021/10/27 16:25:50 by evalorie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-size_t	ft_strlen(const char *str)
-{
-	size_t	i;
-
-	i = 0;
-	while (str[i] != '\0')
-		i++;
-	return (i);
-}
-
-char	*ft_lstrjoin(char *line, char *buff)
+char	*ft_strjoin(char *line, char *buff)
 {
 	char	*s;
 
@@ -35,7 +25,7 @@ char	*ft_lstrjoin(char *line, char *buff)
 		line++;
 		s++;
 	}
-	while (*buff)
+	while (*buff || *(buff - 1) == '\n')
 	{
 		*s= *buff;
 		s++;
@@ -54,10 +44,17 @@ void	ft_last(char *buff, char *last)
 	i = 0;
 	j = 0;
 	while (buff[i] != '\n')
+	{
+		if (buff[i] == '\0')
+		{
+			free(last);
+			return ;
+		}
 		i++;
-	i++;
+	}
 	free(last);
-	last = (char *)malloc(i * sizeof(char));
+	last = (char *)malloc((BUFFER_SIZE - i) * sizeof(char));
+	i++;
 	while (buff[i])
 	{
 		last[j] = buff[i];
@@ -76,25 +73,25 @@ char	*ft_readline(int fd, char *buff, char *last)
 	i = 0;
 	trigger = 0;
 	line = NULL;
-	line = ft_lstrjoin(line, last);
+	line = ft_strjoin(line, last);
+	buff = (char *)malloc(sizeof(char) * (BUFFER_SIZE + 1));
 	while (1)
 	{
-		buff = (char *)malloc(sizeof(char) * (BUFFER_SIZE + 1));
 		read(fd, buff, BUFFER_SIZE);
+		buff[BUFFER_SIZE] = '\0';
 		while (i < BUFFER_SIZE)
 		{
-			if (buff[i] == '\n')
+			if (buff[i] == '\n' || buff[i] == '\0')
 			{
-				ft_last(buff + i, last);
-				buff[i] = '\0';
+				ft_last(buff, last);
 				trigger = 1;
+				break ;
 			}
 			i++;
 		}
 		if (trigger == 1)
 			break ;
-		line = ft_lstrjoin(line, buff);
-		free(buff);
+		line = ft_strjoin(line, buff);
 	}
 	return (line);
 }
@@ -108,6 +105,22 @@ char	*get_next_line(int fd)
 	if (fd < 0 || BUFFER_SIZE <= 0)
 		return (NULL);
 	buff = NULL;
+	last = NULL;
 	line = ft_readline(fd, buff, last);
 	return (line);
+}
+
+int main(void)
+{
+	char	*line;
+	int		i = 0;
+	int		fd1;
+	fd1 = open("test.txt", O_RDONLY);
+	while (i < 3)
+	{
+		line = get_next_line(fd1);
+		printf("%s", line);
+		i++;
+	}
+	return (0);
 }

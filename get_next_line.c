@@ -11,57 +11,74 @@
 /* ************************************************************************** */
 
 #include "get_next_line.h"
+#define BUFFER_SIZE 10
 
 char	*ft_strjoin(char *line, char *buff)
 {
 	char	*s;
+	size_t	len_line;
+	size_t	len_buff;
+	int		i;
+	int		j;
 
-	s = (char *)malloc((ft_strlen(line) + ft_strlen(buff) + 1) * sizeof(char));
+	len_line = ft_strlen(line);
+	len_buff = ft_strlen(buff);
+	i = 0;
+	j = 0;
+	if (len_line == 0 && len_buff == 0)
+		return (NULL);
+	s = (char *)malloc((len_line + len_buff + 1) * sizeof(char));
 	if (s == NULL)
 		return (NULL);
-	while (*line)
+	if (line != NULL)
 	{
-		*s = *line;
-		line++;
-		s++;
+		while (line[i] != '\0')
+		{
+			s[i] = line[i];
+			i++;
+		}
 	}
-	while (*buff || *(buff - 1) == '\n')
+	while (buff[j] != '\0')
 	{
-		*s= *buff;
-		s++;
-		buff++;
+		s[i] = buff[j];
+		i++;
+		j++;
 	}
-	*s = '\0';
-	free(line);
+	s[i] = '\0';
 	return (s);
 }
 
-void	ft_last(char *buff, char *last)
+size_t    ft_strlen(const char *str)
+{
+    size_t    i;
+
+    i = 0;
+	if (str == NULL)
+		return (0);
+    while (str[i] != '\0')
+        i++;
+    return (i);
+}
+
+char	*ft_last(char *buff)
 {
 	int	i;
 	int	j;
+	char	*s;
 
 	i = 0;
 	j = 0;
 	while (buff[i] != '\n')
-	{
-		if (buff[i] == '\0')
-		{
-			free(last);
-			return ;
-		}
 		i++;
-	}
-	free(last);
-	last = (char *)malloc((BUFFER_SIZE - i) * sizeof(char));
-	i++;
-	while (buff[i])
+	s = (char *)malloc((BUFFER_SIZE - i) * sizeof(char));
+	while (buff[++i] != '\0')
 	{
-		last[j] = buff[i];
+		s[j] = buff[i];
 		j++;
-		i++;
 	}
-	last[j] = '\0';
+	s[j] = '\0';
+	printf("bi\n");
+	return (s);
 }
 
 char	*ft_readline(int fd, char *buff, char *last)
@@ -69,30 +86,45 @@ char	*ft_readline(int fd, char *buff, char *last)
 	char	*line;
 	int		i;
 	int		trigger;
+	char	*tmp;
 
 	i = 0;
+	tmp = NULL;
 	trigger = 0;
-	line = NULL;
+	// line = NULL;
+	line =(char *)malloc(sizeof(char) * 0);
 	line = ft_strjoin(line, last);
 	buff = (char *)malloc(sizeof(char) * (BUFFER_SIZE + 1));
 	while (1)
 	{
 		read(fd, buff, BUFFER_SIZE);
+		if (buff == NULL)
+		return (NULL);
 		buff[BUFFER_SIZE] = '\0';
-		while (i < BUFFER_SIZE)
+		printf("hi, i am buff : %s\n", buff);
+		while (buff[i] != '\0')
 		{
-			if (buff[i] == '\n' || buff[i] == '\0')
+			if (buff[i] == '\n')
 			{
-				ft_last(buff, last);
+				tmp = last;
+				last = ft_last(buff);
+				free(tmp);
+				buff[i] = '\0';
+				tmp = line;
+				line = ft_strjoin(line, buff);
+				free(tmp);
 				trigger = 1;
 				break ;
 			}
 			i++;
 		}
-		if (trigger == 1)
+		if (trigger == 1 || i < BUFFER_SIZE)
 			break ;
+		i = 0;
 		line = ft_strjoin(line, buff);
+		// printf("%s", line);
 	}
+	free(buff);
 	return (line);
 }
 
@@ -106,6 +138,7 @@ char	*get_next_line(int fd)
 		return (NULL);
 	buff = NULL;
 	last = NULL;
+	printf("hi\n");
 	line = ft_readline(fd, buff, last);
 	return (line);
 }
@@ -119,7 +152,7 @@ int main(void)
 	while (i < 3)
 	{
 		line = get_next_line(fd1);
-		printf("%s", line);
+		printf("%s\n", line);
 		i++;
 	}
 	return (0);

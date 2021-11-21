@@ -19,6 +19,15 @@
 #include <fcntl.h>
 
 char	*get_next_line(int fd);
-//size_t	ft_strlen(const char *str);
+char	*ft_strchr(char *s, int c);
+char	*ft_strjoin(char *line, char *buff);
+size_t    ft_strlen(char *str);
+void	check_endl(char **rem, char **line);
+void	ft_stc_rewrite_rem(char **rem, char *ptr);
+void	ft_stc_write_line(char **line, char *buff);
+void	ft_stc_last_check(int read_bite, char **line, char *last);
+char	*ft_strchr(char *s, int c);
+char	*ft_strdup(char *s1);
+void	ft_stc_last_check(int read_bite, char **line, char *last);
 
 #endif

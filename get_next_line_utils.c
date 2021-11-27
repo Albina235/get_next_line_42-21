@@ -6,22 +6,22 @@
 /*   By: evalorie <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/10/27 14:34:19 by evalorie          #+#    #+#             */
-/*   Updated: 2021/10/27 14:42:09 by evalorie         ###   ########.fr       */
+/*   Updated: 2021/11/24 15:07:06 by evalorie         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-size_t    ft_strlen(char *str)
+size_t	ft_strlen(char *str)
 {
-    size_t    i;
+	size_t	i;
 
-    i = 0;
+	i = 0;
 	if (!str)
 		return (0);
-    while (str[i] != '\0')
-        i++;
-    return (i);
+	while (str[i] != '\0')
+		i++;
+	return (i);
 }
 
 char	*ft_strdup(char *s1)
@@ -29,10 +29,12 @@ char	*ft_strdup(char *s1)
 	char	*s2;
 	size_t	n;
 	int		i;
-	
+
 	n = ft_strlen(s1);
 	i = 0;
-	s2 = (char *)malloc((n + 1)* sizeof(char));
+	if (ft_strlen(s1) == 0)
+		return (NULL);
+	s2 = (char *)malloc((n + 1) * sizeof(char));
 	if (s2 == NULL)
 		return (NULL);
 	while (s1[i] != '\0')
@@ -40,11 +42,6 @@ char	*ft_strdup(char *s1)
 		s2[i] = s1[i];
 		i++;
 	}
-	/*if (s1[i] == '\n')
-	{
-		s1[i] = '\n';
-		i++;
-	}*/
 	s2[i] = '\0';
 	return (s2);
 }
@@ -68,8 +65,6 @@ char	*ft_strjoin(char *s1, char *s2)
 	while (s2 && s2[i])
 		mem[j++] = s2[i++];
 	mem[j] = '\0';
-	/*if (s1)
-		free (s1);*/
 	return (mem);
 }
 
